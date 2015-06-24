@@ -1,5 +1,10 @@
 apply plugin: 'java'
 apply plugin: 'idea'
+apply plugin: 'signing'
+apply plugin: 'maven'
+
+group = 'de.otto.sluggify'
+version = '0.1.0'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -15,6 +20,7 @@ dependencies {
 repositories {
     mavenCentral()
     maven { url 'http://oss.sonatype.org/content/repositories/releases/' }
+    maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
 }
 
 // default testing behaviour to execute all groups with testNG, may be overridden in submodules
@@ -28,7 +34,73 @@ test {
 
 }
 
+idea {
+    project {
+        languageLevel = '1.8'
+    }
+
+}
+
+signing {
+    sign configurations.archives
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from 'build/docs/javadoc'
+}
+
+task sourcesJar(type: Jar) {
+    from sourceSets.main.allSource
+    classifier = 'sources'
+}
 
 task wrapper(type: Wrapper) {
   gradleVersion = '2.4'
 }
+
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+            repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+                authentication(userName: sonatypeUsername, password: sonatypePassword)
+            }
+            snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
+                authentication(userName: sonatypeUsername, password: sonatypePassword)
+            }
+
+            pom.project {
+                packaging 'jar'
+                name 'sluggify'
+                description 'library for sluggifying text'
+                url 'http://github.com/otto-de/sluggify'
+
+                scm {
+                    url 'scm:git@github.com:otto-de/sluggify.git'
+                    connection 'scm:git@github.com:otto-de/sluggify.git'
+                    developerConnection 'scm:git@github.com:otto-de/sluggify.git'
+                }
+
+                licenses {
+                    license {
+                        name 'The Apache Software License, Version 2.0'
+                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                        distribution 'repo'
+                    }
+                }
+
+                developers {
+                    developer {
+                        id 'sluggify-developers'
+                        name 'Developers Developers Developers'
+                    }
+                }
+
+            }
+        }
+    }
+}
+0
