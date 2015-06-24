@@ -59,6 +59,11 @@ task wrapper(type: Wrapper) {
   gradleVersion = '2.4'
 }
 
+artifacts {
+    archives jar
+    archives javadocJar
+    archives sourcesJar
+}
 
 uploadArchives {
     repositories {
@@ -103,4 +108,3 @@ uploadArchives {
         }
     }
 }
-0
