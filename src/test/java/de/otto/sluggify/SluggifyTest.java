@@ -39,8 +39,13 @@ public class SluggifyTest {
     }
 
     @Test
-    public void shouldRemoveOpastrophes() {
+    public void shouldRemoveOpastrophesBeforeLetterS() {
         assertThat(Sluggify.sluggify("Mom's pants"), is("moms-pants"));
+    }
+
+    @Test
+    public void shouldReplaceOpastrophesWithDashIfNotFollowedByLetterS() {
+        assertThat(Sluggify.sluggify("Turtles'pants are awkward'"), is("turtles-pants-are-awkward"));
     }
 
     @Test
