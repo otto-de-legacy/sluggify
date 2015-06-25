@@ -53,4 +53,21 @@ public class SluggifyTest {
         assertThat(Sluggify.sluggify(null), is(nullValue()));
         assertThat(Sluggify.sluggify(""), is(""));
     }
+
+    @Test
+    public void slugifyPlusSymbol() throws Exception {
+        assertThat(Sluggify.sluggify("A+"), is("aplus"));
+        assertThat(Sluggify.sluggify("A++"), is("aplusplus"));
+        assertThat(Sluggify.sluggify("A+++"), is("aplusplusplus"));
+    }
+
+    @Test
+    public void slugifyMitLetztesZeichenAlsBindestrich() {
+        assertThat(Sluggify.sluggify("David-schreibt-auch-einen-Test-"), is("david-schreibt-auch-einen-test"));
+    }
+
+    @Test
+    public void slugifyMitSonderzeichen() {
+        assertThat(Sluggify.sluggify("Haup(t)hose_+*~#'/-\"'un[d]so--Wahns{i}n.n;"), is("haup-t-hose_plus-un-d-so-wahns-i-n-n"));
+    }
 }

@@ -266,6 +266,8 @@ public class Sluggify {
             case 'ż':
             case 'ź':
                 return "z";
+            case '+':
+                return "plus";
             default:
                 return "-";
         }
