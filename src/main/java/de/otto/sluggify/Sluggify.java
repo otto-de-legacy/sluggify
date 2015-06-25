@@ -1,13 +1,25 @@
 package de.otto.sluggify;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
+
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Sluggify {
 
-    private static final Map<String, String> slugifyCache = new ConcurrentHashMap<>();
+    private static final LoadingCache<String, String> slugifyCache = CacheBuilder.<String,String> newBuilder()
+            .maximumSize(10000)
+            .expireAfterWrite(10, TimeUnit.MINUTES)
+            .build(new CacheLoader<String, String>() {
+                @Override
+                public String load(String key) throws Exception {
+                    return doSlugify(key);
+                }
+            });
 
     public static boolean isEmpty(String stringToCheck) {
         return stringToCheck == null || stringToCheck.isEmpty();
@@ -264,11 +276,11 @@ public class Sluggify {
             return string;
         }
 
-        if (!slugifyCache.containsKey(string)) {
-            slugifyCache.put(string, doSlugify(string));
+        try {
+            return slugifyCache.get(string);
+        } catch (ExecutionException e) {
+            throw new RuntimeException(e);
         }
-
-        return slugifyCache.get(string);
     }
 
     private static String doSlugify(String string) {

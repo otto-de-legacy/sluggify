@@ -6,10 +6,9 @@ apply plugin: 'maven'
 group = 'de.otto.sluggify'
 version = '0.1.0'
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
-
 dependencies {
+    compile "com.google.guava:guava:18.0"
+
     // Unit-testing libraries:
     testCompile "org.testng:testng:6.8.21"
     testCompile "org.hamcrest:hamcrest-core:1.3"
