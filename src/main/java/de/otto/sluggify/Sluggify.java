@@ -1,5 +1,7 @@
 package de.otto.sluggify;
 
+import com.google.common.base.Joiner;
+import com.google.common.base.Splitter;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
@@ -8,6 +10,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static com.google.common.collect.Iterables.transform;
 
 public class Sluggify {
 
@@ -224,7 +228,6 @@ public class Sluggify {
             case 'ŝ':
             case 'ș':
                 return "s";
-
             case 'ť':
             case 'ţ':
             case 'ŧ':
@@ -283,6 +286,23 @@ public class Sluggify {
         } catch (ExecutionException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    /**
+     * Sluggify a path consisting of several path elements separated by a path separator.
+     * That is, split path by separator, sluggify all the elements and then join the path back together.
+     *
+     * @param path path to sluggify
+     * @param pathSeparator separator of path to sluggify
+     * @param resultPathSeparator new separator to be used for the returned path
+     *
+     * @return the new sluggified path
+     */
+    public static String sluggifyPath(final String path,
+                                      final String pathSeparator,
+                                      final String resultPathSeparator) {
+        final Iterable<String> parts = Splitter.on(pathSeparator).split(path);
+        return Joiner.on(resultPathSeparator).join(transform(parts, input -> Sluggify.sluggify(input)));
     }
 
     private static String doSlugify(String string) {

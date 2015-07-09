@@ -75,4 +75,40 @@ public class SluggifyTest {
     public void slugifyMitSonderzeichen() {
         assertThat(Sluggify.sluggify("Haup(t)hose_+*~#'/-\"'un[d]so--Wahns{i}n.n;"), is("haup-t-hose_plus-un-d-so-wahns-i-n-n"));
     }
+
+    @Test
+    public void shouldSluggifyCategoryPath() {
+        // given
+        String categoryTitle = "Mode>Jungen>Mädchen>Schnürschuhe";
+
+        // when
+        String path = Sluggify.sluggifyPath(categoryTitle, ">", "/");
+
+        // then
+        assertThat(path.toString(), is("mode/jungen/maedchen/schnuerschuhe"));
+    }
+
+    @Test
+    public void shouldSluggifyCategoryPathWithOnePathElement() {
+        // given
+        String categoryTitle = "Mode";
+
+        // when
+        String path = Sluggify.sluggifyPath(categoryTitle, ">", "/");
+
+        // then
+        assertThat(path.toString(), is("mode"));
+    }
+
+    @Test
+    public void shouldSluggifyCategoryPathWithTwoEmptyPathElements() {
+        // given
+        String categoryTitle = "Mode>>";
+
+        // when
+        String path = Sluggify.sluggifyPath(categoryTitle, ">", "/");
+
+        // then
+        assertThat(path.toString(), is("mode//"));
+    }
 }

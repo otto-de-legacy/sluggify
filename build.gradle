@@ -27,10 +27,8 @@ test {
     description "Tell gradle to use TestNG with all groups"
     useTestNG()
     options {
-        includeGroups = ['.*']
-        excludeGroups = []
+        useDefaultListeners = true
     }
-
 }
 
 idea {
