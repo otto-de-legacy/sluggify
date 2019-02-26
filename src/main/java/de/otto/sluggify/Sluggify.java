@@ -306,43 +306,11 @@ public class Sluggify {
     }
 
     private static String doSlugify(String string) {
-        if (string == null) return null;
-
         string = string.replaceAll("([a-z])'s([^a-z])", "$1s$2"); // WTF ?
         string = removeSpecialCharactersAndConvertToLowercase(string);
 
         string = string.replaceAll("-+$", "").replaceAll("^-+", "");
-        string = removeLeadingAndTrailingHyphens(string);
 
         return string;
-    }
-
-    private static String removeLeadingAndTrailingHyphens(String string) {
-        int leadingHyphens = numberOfLeadingHyphens(string);
-        if (leadingHyphens > 0) {
-            string = string.substring(leadingHyphens);
-        }
-        int trailingHyphens = numberOfTrailingHyphens(string);
-        if (trailingHyphens > 0) {
-            string = string.substring(0, string.length() - trailingHyphens);
-        }
-        return string;
-    }
-
-    private static int numberOfTrailingHyphens(String input) {
-        int len = input.length();
-        int idx = 0;
-        while (input.charAt(len - idx - 1) == '-') {
-            ++idx;
-        }
-        return idx;
-    }
-
-    private static int numberOfLeadingHyphens(String input) {
-        int idx = 0;
-        while (input.charAt(idx) == '-') {
-            ++idx;
-        }
-        return idx;
     }
 }
