@@ -54,6 +54,11 @@ public class SluggifyTest {
     }
 
     @Test
+    public void shouldSluggifySingleWeirdCharacter() {
+        assertThat(Sluggify.sluggify("®"), is(""));
+    }
+
+    @Test
     public void shouldSlugifyNullsAndEmptyStrings() {
         assertThat(Sluggify.sluggify(null), is(nullValue()));
         assertThat(Sluggify.sluggify(""), is(""));
